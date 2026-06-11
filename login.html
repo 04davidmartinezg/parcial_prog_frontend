@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Sistema de Viajes</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <form id="formLogin">
+        <section class="login-form">
+            <h2>Sistema de Gestión de Transporte</h2>
+            <p>Ingrese su información para iniciar sesión</p>
+            <input class="form-control" type="text" id="usuario" placeholder="Usuario o correo" required autocomplete="off">
+            <input class="form-control" type="password" id="contrasena" placeholder="Contraseña" required>
+            <div id="mensaje-error" class="mensaje-alerta hidden"></div>
+            <button class="btn-form" type="submit">Iniciar Sesion</button>
+        </section>
+    </form>
+
+    <script src="JS/auth.js"></script>
+</body>
+</html>
