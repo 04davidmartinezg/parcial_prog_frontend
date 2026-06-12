@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>LogiTrans Express - Programación de Viajes</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <div class="modulo-container">
+        
+        <div class="navigation-bar">
+            <a href="index.html" class="btn btn-secondary">← Volver al Menú</a>
+        </div>
+
+        <h2>Módulo de Programación de Viajes</h2>
+
+        <div class="container-formulario-modulo">
+            
+            <div class="columna-datos">
+                <h3 id="form-title">Programar Itinerario</h3>
+                
+                <form id="formViaje">
+                    <div class="form-grid">
+                        
+                        <div class="form-group">
+                            <label for="selectConductor">Conductor Asignado</label>
+                            <select id="selectConductor" required>
+                                <option value="">Cargando conductores...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="selectVehiculo">Vehículo / Camión</label>
+                            <select id="selectVehiculo" required>
+                                <option value="">Cargando vehículos...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="selectRuta">Ruta de Viaje</label>
+                            <select id="selectRuta" required>
+                                <option value="">Cargando rutas...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fecha_programacion">Fecha del Viaje</label>
+                            <input type="date" id="fecha_programacion" required>
+                        </div>
+
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn btn-primary" type="submit" id="btnGuardar">Guardar Viaje</button>
+                        <button class="btn btn-secondary hidden" type="button" id="btnCancelar">Cancelar Edición</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="tabla-container">
+                <h3>Historial de Itinerarios</h3>
+                <table class="tabla-datos" id="viajesTB">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Conductor</th>
+                            <th>Vehículo (Placa)</th>
+                            <th>Ruta Assigned</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+
+        </div> </div>
+
+    <div id="modal1" class="modal-overlay close">
+        <div class="modal-content">
+            <p></p> 
+            <button type="button" class="btn-modal-close">Aceptar</button>
+        </div>
+    </div>
+
+    <script src="js/modal.js"></script>
+    <script src="js/viajes.js"></script>
+</body>
+</html>
