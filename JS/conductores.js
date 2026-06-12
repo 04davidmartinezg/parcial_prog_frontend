@@ -1,47 +1,64 @@
-
 const conductores = [];
-let conductorSeleccionado = null; 
-const conductoresTabla = document.getElementById("conductoresTB");
+let conductorSeleccionado = null;
+
+const conductoresTB = document.getElementById("conductoresTB");
+const formConductor = document.getElementById("formConductor");
+const btnGuardar = document.getElementById("btnGuardar");
+const btnCancelar = document.getElementById("btnCancelar");
+const titulo = document.getElementById("form-title");
+const URL = "http://127.0.0.1:8001/conductor"; 
+const getConductorForm = () => ({
+    nombres: document.getElementById("nombres").value.trim(),
+    apellidos: document.getElementById("apellidos").value.trim(),
+    documento: document.getElementById("documento").value.trim(),
+    telefono: document.getElementById("telefono").value.trim(),
+    correo: document.getElementById("correo").value.trim(),
+    numero_licencia: document.getElementById("numero_licencia").value.trim(),
+    categoria_licencia: document.getElementById("categoria_licencia").value.trim(),
+    fecha_vencimiento_licencia: document.getElementById("fecha_vencimiento_licencia").value,
+    ...(conductorSeleccionado && { estado: document.getElementById("estado").value })
+});
+const setConductorForm = (c) => {
+    document.getElementById("nombres").value = c.nombres;
+    document.getElementById("apellidos").value = c.apellidos;
+    document.getElementById("documento").value = c.documento;
+    document.getElementById("telefono").value = c.telefono;
+    document.getElementById("correo").value = c.correo;
+    document.getElementById("numero_licencia").value = c.numero_licencia;
+    document.getElementById("categoria_licencia").value = c.categoria_licencia;
+    document.getElementById("fecha_vencimiento_licencia").value = c.fecha_vencimiento_licencia;
+    const selectEstado = document.getElementById("estado");
+    if (selectEstado) {
+        selectEstado.value = c.estado;
+    }
+};
 const mostrarConductores = () => {
-    const tbody = conductoresTabla.getElementsByTagName("tbody")[0];
-    tbody.innerHTML = ""; 
-    for (let item of conductores) {
+    const tbody = conductoresTB.querySelector("tbody");
+    tbody.innerHTML = "";  
+    conductores.forEach(item => {
         const tr = document.createElement("tr");
-        const docTd = document.createElement("td");
-        docTd.textContent = item.documento;
-        const nombreTd = document.createElement("td");
-        nombreTd.textContent = `${item.nombres} ${item.apellidos}`;
-        const licenciaTd = document.createElement("td");
-        licenciaTd.textContent = `${item.num_licencia} (${item.categoria}) - Vence: ${item.fecha_vencimiento}`;
-        const estadoTd = document.createElement("td");
-        const badge = document.createElement("span");
-        badge.textContent = item.estado;
-        badge.className = `badge badge-${item.estado.toLowerCase().replace(" ", "-")}`;
-        estadoTd.appendChild(badge);
-        const accionesTd = document.createElement("td");
-        const modificarBtn = document.createElement("button");
-        modificarBtn.textContent = "Editar";
-        modificarBtn.className = "btn-table btn-warning";
-        modificarBtn.addEventListener("click", () => prepararEdicion(item));
-        const eliminarBtn = document.createElement("button");
-        accionesTd.appendChild(modificarBtn);
-        tr.appendChild(docTd);
-        tr.appendChild(nombreTd);
-        tr.appendChild(licenciaTd);
-        tr.appendChild(estadoTd);
-        tr.appendChild(accionesTd);
+        tr.innerHTML = `
+            <td>${item.documento}</td>
+            <td>${item.nombres} ${item.apellidos}</td>
+            <td>${item.telefono}</td>
+            <td><strong>[${item.estado.toUpperCase()}]</strong></td>
+            <td>
+                <button class="btn-table btn-warning">Editar</button>
+            </td>
+        `;
+        tr.querySelector("button").addEventListener("click", () => {
+            prepararEdicion(item);
+        });
 
         tbody.appendChild(tr);
-    }
+    });
 };
 const consultarConductores = async () => {
     try {
-        if (conductores.length > 0) {
-            conductores.splice(0, conductores.length);
-        }
-        const response = await fetch("http://127.0.0.1:8002/conductores");
+        conductores.length = 0;
+        const response = await fetch(URL);
         const body = await response.json();
-        body.forEach((item) => {
+        body.forEach(item => {
             conductores.push({
                 id: item.id,
                 nombres: item.nombres,
@@ -49,16 +66,88 @@ const consultarConductores = async () => {
                 documento: item.documento,
                 telefono: item.telefono,
                 correo: item.correo,
-                num_licencia: item.num_licencia,
-                categoria: item.categoria,
-                fecha_vencimiento: item.fecha_vencimiento,
-                estado: item.estado
+                numero_licencia: item.numero_licencia,
+                categoria_licencia: item.categoria_licencia,
+                fecha_vencimiento_licencia: item.fecha_vencimiento_licencia,
+                estado: item.estado || "disponible"
             });
         });
         mostrarConductores();
-    } catch (ex) {
-        console.error("Error en el servicio de conductores:", ex);
+    } catch(ex){
+        showModal("Error consultando la lista de conductores.", "error");
     }
 };
+const registrarConductor = async () => {
+    try {
+        const response = await fetch(URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(getConductorForm())
+        });
 
-consultarConductores();
+        const body = await response.json();
+        if (response.ok) {
+            showModal("Conductor registrado con éxito.", "ok");
+            consultarConductores();
+            formConductor.reset();
+        } else {
+            showModal(body.error || "Error al registrar el conductor.", "error");
+        }
+    } catch(ex){
+        showModal("Error de conexión con el microservicio.", "error");
+    }
+};
+const actualizarConductor = async () => {
+    try {
+        const response = await fetch(`${URL}/${conductorSeleccionado.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(getConductorForm())
+        });
+        const body = await response.json();
+        if (response.ok) {
+            showModal("Datos del conductor actualizados.", "ok");
+            consultarConductores();
+            cancelarEdicion();
+        } else {
+            showModal(body.error || "Error al actualizar los datos.", "error");
+        }
+    } catch(ex){
+        showModal("Error de conexión con el servidor.", "error");
+    }
+};
+const prepararEdicion = (conductor) => {
+    conductorSeleccionado = conductor;
+    setConductorForm(conductor);
+    titulo.textContent = "Editar Conductor";
+    btnGuardar.textContent = "Actualizar Datos";
+    btnCancelar.classList.remove("hidden");
+
+    const groupEstado = document.getElementById("form-group-estado");
+    if (groupEstado) groupEstado.classList.remove("hidden");
+};
+const cancelarEdicion = () => {
+    conductorSeleccionado = null;
+    formConductor.reset();
+    titulo.textContent = "Registrar Conductor";
+    btnGuardar.textContent = "Guardar Conductor";
+    btnCancelar.classList.add("hidden");
+    
+    const groupEstado = document.getElementById("form-group-estado");
+    if (groupEstado) groupEstado.classList.add("hidden");
+};
+formConductor.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = getConductorForm();
+    
+    if (!data.nombres || !data.apellidos || !data.documento || !data.numero_licencia) {
+        showModal("Los campos de identificación y licencia son estrictamente obligatorios.", "error");
+        return;
+    }
+    conductorSeleccionado ? actualizarConductor() : registrarConductor();
+});
+btnCancelar.addEventListener("click", cancelarEdicion);
+
+document.addEventListener("DOMContentLoaded", () => {
+    consultarConductores();
+});

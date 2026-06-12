@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>LogiTrans Express - Seguimiento de Viajes</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <div class="modulo-container">
+        <div class="navigation-bar">
+            <a href="index.html" class="btn btn-secondary">← Volver al Menú</a>
+        </div>
+        <h2>Módulo de Seguimiento de Viajes (En Ruta)</h2>
+        <div class="container-formulario-modulo">
+            <div class="columna-datos">
+                <h3 id="form-title">Control de Seguimiento</h3>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="viajeIdInput">ID del Viaje a Gestionar</label>
+                        <input type="number" id="viajeIdInput" placeholder="Ej: 1" autocomplete="off">
+                    </div>
+                    <div class="form-group-btn">
+                        <button class="btn btn-primary" id="btnCargarViaje" type="button">Cargar Viaje</button>
+                    </div>
+                </div>
+                <hr class="separador-formulario">
+                <div id="panelAcciones" class="hidden">
+                    <p class="texto-info-viaje"><strong>Viaje Seleccionado:</strong> <span id="infoViaje">Ninguno</span></p>
+                    <div class="form-actions-status">
+                        <button class="btn btn-primary" id="btnIniciar" type="button">▶ Iniciar Viaje</button>
+                        <button class="btn btn-danger" id="btnFinalizar" type="button">🛑 Finalizar Viaje</button>
+                    </div>
+                    <form id="formNovedad">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="estadoNovedad">Estado de la Ruta</label>
+                                <select id="estadoNovedad" required>
+                                    <option value="normal">Normal</option>
+                                    <option value="retrasado">Retrasado</option>
+                                    <option value="detenido">Detenido</option>
+                                    <option value="desvio">Desvío</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="descripcionNovedad">Detalle del Suceso (Novedad)</label>
+                                <textarea id="descripcionNovedad" rows="3" placeholder="Ej: Retraso por tráfico pesado en la salida..." required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary" type="submit" id="btnGuardar">Reportar Novedad</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="tabla-container">
+                <h3>Historial de Novedades / Bitácora</h3>
+                <table class="tabla-datos" id="seguimientoTB">
+                    <thead>
+                        <tr>
+                            <th>Fecha / Hora</th>
+                            <th>Novedad Registrada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="2" class="tabla-vacia">Cargue un ID de viaje para consultar su bitácora.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <div id="modal1" class="modal-overlay close">
+        <div class="modal-content">
+            <p></p> 
+            <button type="button" class="btn-modal-close">Aceptar</button>
+        </div>
+    </div>
+    <script src="js/modal.js"></script>
+    <script src="js/seguimiento.js"></script>
+</body>
+</html>

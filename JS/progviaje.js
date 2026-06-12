@@ -5,24 +5,31 @@ const formViaje = document.getElementById("formViaje");
 const btnGuardar = document.getElementById("btnGuardar");
 const btnCancelar = document.getElementById("btnCancelar");
 const titulo = document.getElementById("form-title");
-const URL_PROG_VIAJES = "http://127.0.0.1:8003/progviajes"; 
-const URL_CONDUCTORES = "http://127.0.0.1:8002/conductores";
-const URL_VEHICULOS   = "http://127.0.0.1:8000/vehiculos";
-const URL_RUTAS       = "http://127.0.0.1:8003/rutas";
+const URL_PROG_VIAJES = "http://127.0.0.1:8002/progviaje";    
+const URL_CONDUCTORES = "http://127.0.0.1:8001/conductores";  
+const URL_VEHICULOS   = "http://127.0.0.1:8000/vehiculos";    
+const URL_RUTAS       = "http://127.0.0.1:8003/rutas";        
+
 const selectConductor = document.getElementById("selectConductor");
 const selectVehiculo = document.getElementById("selectVehiculo");
 const selectRuta = document.getElementById("selectRuta");
 const getViajeForm = () => ({
-    conductor_id: selectConductor.value,
-    vehiculo_id: selectVehiculo.value,
-    ruta_id: selectRuta.value,
-    fecha_programacion: document.getElementById("fecha_programacion").value
+    conductor_id: parseInt(selectConductor.value),
+    vehiculo_id: parseInt(selectVehiculo.value),
+    ruta_id: parseInt(selectRuta.value),
+    fecha_salida: document.getElementById("fecha_salida").value,
+    hora_salida: document.getElementById("hora_salida").value + (document.getElementById("hora_salida").value.length === 5 ? ":00" : ""), // Forza formato HH:MM:SS
+    fecha_estimada_llegada: document.getElementById("fecha_estimada_llegada").value,
+    observaciones: document.getElementById("observaciones").value.trim()
 });
 const setViajeForm = (viaje) => {
     selectConductor.value = viaje.conductor_id;
     selectVehiculo.value = viaje.vehiculo_id;
     selectRuta.value = viaje.ruta_id;
-    document.getElementById("fecha_programacion").value = viaje.fecha_programacion;
+    document.getElementById("fecha_salida").value = viaje.fecha_salida;
+    document.getElementById("hora_salida").value = viaje.hora_salida ? viaje.hora_salida.substring(0, 5) : ""; 
+    document.getElementById("fecha_estimada_llegada").value = viaje.fecha_estimada_llegada;
+    document.getElementById("observaciones").value = viaje.observaciones || "";
 };
 const cargarSelectores = async () => {
     try {
@@ -36,7 +43,7 @@ const cargarSelectores = async () => {
         const listaRutas = await resRut.json();
         selectConductor.innerHTML = '<option value="">-- Seleccione Conductor --</option>';
         listaConductores.forEach(c => {
-            if (c.estado.toLowerCase() === "disponible") {
+            if (c.estado.toLowerCase() === "disponible") { // Validando tu filtro por disponibles
                 const opt = document.createElement("option");
                 opt.value = c.id;
                 opt.textContent = `${c.nombres} ${c.apellidos}`;
@@ -67,10 +74,10 @@ const mostrarViajes = () => {
     viajes.forEach(item => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td>${item.fecha_programacion}</td>
+            <td>${item.fecha_salida} ${item.hora_salida ? item.hora_salida.substring(0, 5) : ''}</td>
             <td>${item.conductor_nombre || 'ID: ' + item.conductor_id}</td>
             <td>${item.vehiculo_placa || 'ID: ' + item.vehiculo_id}</td>
-            <td>${item.ruta_nombre || 'ID: ' + item.ruta_id}</td>
+            <td>${item.observaciones || 'Sin observaciones'}</td>
             <td>
                 <button class="btn-table btn-warning">Editar</button>
             </td>
@@ -95,7 +102,10 @@ const consultarViajes = async () => {
                 vehiculo_placa: item.vehiculo_placa,
                 ruta_id: item.ruta_id,
                 ruta_nombre: item.ruta_nombre,
-                fecha_programacion: item.fecha_programacion
+                fecha_salida: item.fecha_salida,
+                hora_salida: item.hora_salida,
+                fecha_estimada_llegada: item.fecha_estimada_llegada,
+                observaciones: item.observaciones
             });
         });
         mostrarViajes();
@@ -125,7 +135,7 @@ const registrarViaje = async () => {
 };
 const actualizarViaje = async () => {
     try {
-        const response = await fetch(`${URL_PROG_VIAJES}/${viajeSeleccionado.id}`, { // <-- Corregido a URL_PROG_VIAJES
+        const response = await fetch(`${URL_PROG_VIAJES}/${viajeSeleccionado.id}`, { 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(getViajeForm())
@@ -159,8 +169,8 @@ const cancelarEdicion = () => {
 formViaje.addEventListener("submit", (e) => {
     e.preventDefault();
     const data = getViajeForm();
-    if (!data.conductor_id || !data.vehiculo_id || !data.ruta_id || !data.fecha_programacion) {
-        showModal("Todos los campos de la asignación son obligatorios.", "error");
+    if (!data.conductor_id || !data.vehiculo_id || !data.ruta_id || !data.fecha_salida || !data.hora_salida) {
+        showModal("Todos los campos obligatorios de la asignación deben completarse.", "error");
         return;
     }
     viajeSeleccionado ? actualizarViaje() : registrarViaje();

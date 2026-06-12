@@ -26,7 +26,7 @@ const setConductorForm = (data) => {
 };
 const registrarConductor = async () => {
     try {
-        const response = await fetch("http://127.0.0.1:8002/conductores", {
+        const response = await fetch("http://127.0.0.1:8001/conductores", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(getConductorForm())
@@ -47,7 +47,7 @@ const registrarConductor = async () => {
 const actualizarConductor = async () => {
     try {
         const id = conductorSeleccionado.id; 
-        const response = await fetch("http://127.0.0.1:8002/conductores/" + id, {
+        const response = await fetch("http://127.0.0.1:8001/conductores/" + id, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(getConductorForm())

@@ -1,39 +1,109 @@
-const formLogin = document.getElementById("formLogin");
-formLogin.addEventListener("submit", login);
-async function login(e) {
-    e.preventDefault(); 
-    const usuario = document.getElementById("usuario").value.trim();
-    const contrasena = document.getElementById("contrasena").value.trim();
-    if (!usuario || !contrasena) {
-        showModal("Debe completar todos los campos.", "error");
-        return;
-    }
+const URL_AUTH = "http://127.0.0.1:8000"; // Puerto 8000 según tus pruebas HTTP
+
+const iniciarSesion = async (usernameOrEmail, contrasena) => {
     try {
-        const response = await fetch("http://127.0.0.1:8000/login", {
+        const response = await fetch(`${URL_AUTH}/login`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                username_or_email: usuario,
-                contrasena: contrasena
+                username_or_email: usernameOrEmail,
+                contrasena: contrasena 
             })
         });
         const body = await response.json();
         if (response.ok) {
-            localStorage.setItem("usuarioId", body.id);
-            localStorage.setItem("nombre", body.nombre || (body.usuario && body.usuario.nombre));
-            localStorage.setItem("rol", body.rol || (body.usuario && body.usuario.rol));
-            showModal("¡Inicio de sesión exitoso!", "ok");
+            localStorage.setItem("usuario_id", body.id);
+            localStorage.setItem("usuario_nombre", body.username || usernameOrEmail);
+            
+            showModal("Inicio de sesión exitoso. Bienvenido.", "ok");
             setTimeout(() => {
                 window.location.href = "index.html"; 
             }, 1200);
-
         } else {
-            showModal(body.error || "Credenciales incorrectas.", "error");
+            showModal(body.error || "Credenciales incorrectas. Intente de nuevo.", "error");
         }
-    } catch (error) {
-        console.error("Error de conexión:", error);
-        showModal("No fue posible conectar con el servidor.", "error");
+    } catch (ex) {
+        showModal("Error de conexión con el servicio de autenticación.", "error");
     }
-}
+};
+
+const validarSesionActiva = async () => {
+    const userId = localStorage.getItem("usuario_id");
+    
+    if (!userId) {
+        if (!window.location.pathname.endsWith("login.html")) {
+            window.location.href = "login.html";
+        }
+        return;
+    }
+
+    try {
+        const response = await fetch(`${URL_AUTH}/validate`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: parseInt(userId) })
+        });
+
+        if (!response.ok) {
+            localStorage.clear();
+            if (!window.location.pathname.endsWith("login.html")) {
+                window.location.href = "login.html";
+            }
+        }
+    } catch (ex) {
+        console.error("No se pudo verificar el estado de la sesión con el servidor.");
+    }
+};
+const cerrarSesion = async () => {
+    cont userId = localStorage.getItem("usuario_id");
+    
+    if (!userId) {
+        localStorage.clear();
+        window.location.href = "login.html";
+        return;
+    }
+    try {
+        const response = await fetch(`${URL_AUTH}/logout`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: parseInt(userId) })
+        });
+        if (response.ok) {
+            localStorage.clear();
+            window.location.href = "login.html";
+        } else {
+            showModal("Error al procesar el cierre de sesión en el servidor.", "error");
+        }
+    } catch (ex) {
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("loginForm");
+    
+    if (loginForm) {
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const userVal = document.getElementById("txtUsuario").value.trim();
+            const passVal = document.getElementById("txtContrasena").value;
+
+            if (!userVal || !passVal) {
+                showModal("Por favor rellene todos los campos.", "error");
+                return;
+            }
+            iniciarSesion(userVal, passVal);
+        });
+    } else {
+        validarSesionActiva();
+    }
+
+    const btnLogout = document.getElementById("btnLogout");
+    if (btnLogout) {
+        btnLogout.addEventListener("click", (e) => {
+            e.preventDefault();
+            cerrarSesion();
+        });
+    }
+});
