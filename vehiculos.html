@@ -19,19 +19,35 @@
                 <h3 id="form-title">Registrar Vehículo</h3>
                 <form name="vehiculoForm" id="formVehiculo" novalidate>
                     <div class="form-grid">
+                        <input type="hidden" id="vehiculoId" name="vehiculoId">
+                        
                         <div class="form-group">
                             <input type="text" id="placa" name="placa" placeholder="Placa del Vehículo (Ej: ABC123)" required autocomplete="off">
                             <small id="msgInputPlaca" class="text-danger" style="display: none;">La placa es obligatoria.</small>
                         </div>
+                        
                         <div class="form-group">
                             <input type="text" id="marca" name="marca" placeholder="Marca" required autocomplete="off">
                         </div>
+                        
                         <div class="form-group">
                             <input type="number" id="modelo" name="modelo" placeholder="Modelo (Año)" required autocomplete="off">
                         </div>
+                        
                         <div class="form-group">
                             <input type="number" id="capacidad" name="capacidad" placeholder="Capacidad de Carga (Kg)" required autocomplete="off">
                         </div>
+
+                        <div class="form-group">
+                            <select id="tipo_vehiculo" name="tipo_vehiculo" required>
+                                <option value="" disabled selected>Seleccione Tipo de Vehículo *</option>
+                                <option value="Camión">Camión</option>
+                                <option value="Tractomula">Tractomula</option>
+                                <option value="Camioneta">Camioneta</option>
+                                <option value="Furgón">Furgón</option>
+                            </select>
+                        </div>
+                        
                         <div id="form-group-estado" class="form-group hidden">
                             <select id="estado" name="estado">
                                 <option value="disponible">Disponible</option>
@@ -53,7 +69,9 @@
                 <img src="Recursos/auto.jfif" alt="Vehículo">
             </div>
             
-        </div> <div class="tabla-container">
+        </div> 
+        
+        <div class="tabla-container">
             <h3>Vehículos Registrados</h3>
             <table id="vehiculosTB" class="tabla-datos">
                 <thead>
@@ -67,12 +85,12 @@
                 </thead>
                 <tbody id="tablaVehiculosBody">
                 </tbody>
-                <tbody>
-                    </tbody>
             </table>
         </div>
         
-    </div> <div id="modal1" class="modal-overlay close">
+    </div> 
+
+    <div id="modal1" class="modal-overlay close">
         <div class="modal-content">
             <p></p> 
             <button type="button" class="btn-modal-close">Aceptar</button>
