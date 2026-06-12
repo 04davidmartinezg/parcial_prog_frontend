@@ -7,17 +7,17 @@ const iniciarSesion = async (usernameOrEmail, contrasena) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 username_or_email: usernameOrEmail,
-                contrasena: contrasena 
+                contrasena: contrasena
             })
         });
         const body = await response.json();
         if (response.ok) {
-            localStorage.setItem("usuario_id", body.id);
-            localStorage.setItem("usuario_nombre", body.username || usernameOrEmail);
-            
+            localStorage.setItem("usuarioId", body.id);
+            localStorage.setItem("nombre", body.nombre || usernameOrEmail);
+
             showModal("Inicio de sesión exitoso. Bienvenido.", "ok");
             setTimeout(() => {
-                window.location.href = "index.html"; 
+                window.location.href = "index.html";
             }, 1200);
         } else {
             showModal(body.error || "Credenciales incorrectas. Intente de nuevo.", "error");
@@ -28,8 +28,8 @@ const iniciarSesion = async (usernameOrEmail, contrasena) => {
 };
 
 const validarSesionActiva = async () => {
-    const userId = localStorage.getItem("usuario_id");
-    
+    const userId = localStorage.getItem("usuarioId");
+
     if (!userId) {
         if (!window.location.pathname.endsWith("login.html")) {
             window.location.href = "login.html";
@@ -54,9 +54,10 @@ const validarSesionActiva = async () => {
         console.error("No se pudo verificar el estado de la sesión con el servidor.");
     }
 };
+
 const cerrarSesion = async () => {
-    cont userId = localStorage.getItem("usuario_id");
-    
+    const userId = localStorage.getItem("usuarioId");
+
     if (!userId) {
         localStorage.clear();
         window.location.href = "login.html";
@@ -81,13 +82,13 @@ const cerrarSesion = async () => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    const loginForm = document.getElementById("loginForm");
-    
+    const loginForm = document.getElementById("formLogin");
+
     if (loginForm) {
         loginForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            const userVal = document.getElementById("txtUsuario").value.trim();
-            const passVal = document.getElementById("txtContrasena").value;
+            const userVal = document.getElementById("usuario").value.trim();
+            const passVal = document.getElementById("contrasena").value;
 
             if (!userVal || !passVal) {
                 showModal("Por favor rellene todos los campos.", "error");
@@ -99,9 +100,9 @@ document.addEventListener("DOMContentLoaded", () => {
         validarSesionActiva();
     }
 
-    const btnLogout = document.getElementById("btnLogout");
-    if (btnLogout) {
-        btnLogout.addEventListener("click", (e) => {
+    const btnCerrarSesion = document.getElementById("btnCerrarSesion");
+    if (btnCerrarSesion) {
+        btnCerrarSesion.addEventListener("click", (e) => {
             e.preventDefault();
             cerrarSesion();
         });

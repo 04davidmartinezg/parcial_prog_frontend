@@ -15,48 +15,47 @@
         <div class="container-formulario-modulo">
             
             <div class="columna-datos">
-                <h3>Datos del Conductor</h3>
-                
-                <form name="conductorForm">
+                <h3 id="form-title">Registrar Conductor</h3>
+                <form id="formConductor">  
                     <div class="form-grid">
                         <div class="form-group">
-                            <input type="text" name="nombres" placeholder="Nombres" required autocomplete="off">
+                            <input type="text" id="nombres" name="nombres" placeholder="Nombres" required autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <input type="text" name="apellidos" placeholder="Apellidos" required autocomplete="off">
+                            <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos" required autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <input type="text" name="documento" placeholder="Documento de Identificación" required autocomplete="off">
+                            <input type="text" id="documento" name="documento" placeholder="Documento de Identificación" required autocomplete="off">
                             <span id="msgInputDoc" class="error-input-msg">El documento es requerido</span>
                         </div>
                         <div class="form-group">
-                            <input type="text" name="telefono" placeholder="Teléfono" required autocomplete="off">
+                            <input type="text" id="telefono" name="telefono" placeholder="Teléfono" required autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <input type="email" name="correo" placeholder="Correo Electrónico" required autocomplete="off">
+                            <input type="email" id="correo" name="correo" placeholder="Correo Electrónico" required autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <input type="text" name="num_licencia" placeholder="Número de Licencia" required autocomplete="off">
+                            <input type="text" id="numero_licencia" name="num_licencia" placeholder="Número de Licencia" required autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <input type="text" name="categoria" placeholder="Categoría de Licencia (Ej: C2, C3)" required autocomplete="off">
+                            <input type="text" id="categoria_licencia" name="categoria" placeholder="Categoría de Licencia (Ej: C2, C3)" required autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label>Vencimiento Licencia:</label>
-                            <input type="date" name="fecha_vencimiento" required>
+                            <input type="date" id="fecha_vencimiento_licencia" name="fecha_vencimiento" required>
                         </div>
-                        <div class="form-group">
-                            <select name="estado">
-                                <option value="Disponible">Disponible</option>
-                                <option value="En ruta">En ruta</option>
-                                <option value="Inactivo">Inactivo</option>
+                        <div class="form-group hidden" id="form-group-estado">
+                            <select id="estado" name="estado">
+                                <option value="disponible">Disponible</option>
+                                <option value="en_ruta">En ruta</option>
+                                <option value="inactivo">Inactivo</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Guardar Conductor</button>
-                        <button type="reset" class="btn btn-secondary">Limpiar / Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar Conductor</button>
+                        <button type="button"class="btn btn-secondary hidden"id="btnCancelar">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -94,6 +93,5 @@
 
     <script src="js/modal.js"></script>
     <script src="js/conductores.js"></script> 
-    <script src="js/conductores_modal.js"></script> 
 </body>
 </html>

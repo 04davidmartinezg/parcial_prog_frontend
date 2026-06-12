@@ -1,41 +1,85 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>LogiTrans Express - Menú Principal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiTrans Express - Gestión de Vehículos</title>
     <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body class="fondo-dashboard">
-
     <div class="modulo-container">
         <a href="index.html" class="btn-back">⬅ Volver al Menú Principal</a>
-        <h2>Panel de Control - LogiTrans Express</h2>
-        <p id="bienvenida-usuario">
-            Bienvenido al sistema. Seleccione el módulo que desea gestionar a continuación:
-        </p>
+        
+        <h2>Gestión de Vehículos</h2>
         
         <div class="container-formulario-modulo">
+            
             <div class="columna-datos">
-                <h3>Módulos del Sistema</h3>
-                
-                <div class="menu-grid">
-                    <a href="conductores.html" class="btn btn-primary btn-menu">🚘 Gestión de Conductores</a>
-                    <a href="vehiculos.html" class="btn btn-primary btn-menu">🚚 Gestión de Vehículos</a>
-                    <a href="viajes.html" class="btn btn-primary btn-menu">🗺️ Control de Viajes</a>
-                </div>
-                
-                <div class="form-actions actions-dashboard">
-                    <a href="login.html" class="btn btn-secondary" id="btnCerrarSesion">Cerrar Sesión</a>
-                </div>
+                <h3 id="form-title">Registrar Vehículo</h3>
+                <form name="vehiculoForm" id="formVehiculo" novalidate>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <input type="text" id="placa" name="placa" placeholder="Placa del Vehículo (Ej: ABC123)" required autocomplete="off">
+                            <small id="msgInputPlaca" class="text-danger" style="display: none;">La placa es obligatoria.</small>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="marca" name="marca" placeholder="Marca" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" id="modelo" name="modelo" placeholder="Modelo (Año)" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" id="capacidad" name="capacidad" placeholder="Capacidad de Carga (Kg)" required autocomplete="off">
+                        </div>
+                        <div id="form-group-estado" class="form-group hidden">
+                            <select id="estado" name="estado">
+                                <option value="disponible">Disponible</option>
+                                <option value="en_ruta">En Ruta</option>
+                                <option value="mantenimiento">En Mantenimiento</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" id="btnGuardar" class="btn btn-primary">Guardar Vehículo</button>
+                        <button type="button" id="btnCancelar" class="btn btn-secondary hidden">Cancelar</button>
+                    </div>
+                </form>
             </div>
             
             <div class="columna-imagen">
-                <img src="Recursos/auto.jfif" alt="Logística de Transporte">
+                <img src="Recursos/auto.jfif" alt="Vehículo">
             </div>
+            
+        </div> <div class="tabla-container">
+            <h3>Vehículos Registrados</h3>
+            <table id="vehiculosTB" class="tabla-datos">
+                <thead>
+                    <tr>
+                        <th>Placa</th>
+                        <th>Marca / Modelo</th>
+                        <th>Capacidad</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaVehiculosBody">
+                </tbody>
+                <tbody>
+                    </tbody>
+            </table>
         </div>
-     </div>
+        
+    </div> <div id="modal1" class="modal-overlay close">
+        <div class="modal-content">
+            <p></p> 
+            <button type="button" class="btn-modal-close">Aceptar</button>
+        </div>
+    </div>
 
+    <script src="js/modal.js"></script>
     <script src="js/vehiculos.js"></script>
-    <script src="js/vehiculos_modal.js"></script>
 </body>
 </html>

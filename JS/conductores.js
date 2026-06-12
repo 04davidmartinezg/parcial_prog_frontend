@@ -1,38 +1,40 @@
 const conductores = [];
 let conductorSeleccionado = null;
-
 const conductoresTB = document.getElementById("conductoresTB");
 const formConductor = document.getElementById("formConductor");
 const btnGuardar = document.getElementById("btnGuardar");
 const btnCancelar = document.getElementById("btnCancelar");
 const titulo = document.getElementById("form-title");
 const URL = "http://127.0.0.1:8001/conductor"; 
-const getConductorForm = () => ({
-    nombres: document.getElementById("nombres").value.trim(),
-    apellidos: document.getElementById("apellidos").value.trim(),
-    documento: document.getElementById("documento").value.trim(),
-    telefono: document.getElementById("telefono").value.trim(),
-    correo: document.getElementById("correo").value.trim(),
-    numero_licencia: document.getElementById("numero_licencia").value.trim(),
-    categoria_licencia: document.getElementById("categoria_licencia").value.trim(),
-    fecha_vencimiento_licencia: document.getElementById("fecha_vencimiento_licencia").value,
-    ...(conductorSeleccionado && { estado: document.getElementById("estado").value })
-});
+const getConductorForm = () => {
+    return {
+        nombres: document.getElementById("nombres").value.trim(),
+        apellidos: document.getElementById("apellidos").value.trim(),
+        documento: document.getElementById("documento").value.trim(),
+        telefono: document.getElementById("telefono").value.trim(),
+        correo: document.getElementById("correo").value.trim(),
+        numero_licencia: document.getElementById("numero_licencia").value.trim(),
+        categoria_licencia: document.getElementById("categoria_licencia").value.trim(),
+        fecha_vencimiento_licencia: document.getElementById("fecha_vencimiento_licencia").value,
+        ...(conductorSeleccionado && { estado: document.getElementById("estado").value })
+    };
+};
 const setConductorForm = (c) => {
-    document.getElementById("nombres").value = c.nombres;
-    document.getElementById("apellidos").value = c.apellidos;
-    document.getElementById("documento").value = c.documento;
-    document.getElementById("telefono").value = c.telefono;
-    document.getElementById("correo").value = c.correo;
-    document.getElementById("numero_licencia").value = c.numero_licencia;
-    document.getElementById("categoria_licencia").value = c.categoria_licencia;
-    document.getElementById("fecha_vencimiento_licencia").value = c.fecha_vencimiento_licencia;
+    document.getElementById("nombres").value = c.nombres || "";
+    document.getElementById("apellidos").value = c.apellidos || "";
+    document.getElementById("documento").value = c.documento || "";
+    document.getElementById("telefono").value = c.telefono || "";
+    document.getElementById("correo").value = c.correo || "";
+    document.getElementById("numero_licencia").value = c.numero_licencia || "";
+    document.getElementById("categoria_licencia").value = c.categoria_licencia || "";
+    document.getElementById("fecha_vencimiento_licencia").value = c.fecha_vencimiento_licencia || "";
     const selectEstado = document.getElementById("estado");
     if (selectEstado) {
-        selectEstado.value = c.estado;
+        selectEstado.value = c.estado || "disponible";
     }
 };
 const mostrarConductores = () => {
+    if (!conductoresTB) return;
     const tbody = conductoresTB.querySelector("tbody");
     tbody.innerHTML = "";  
     conductores.forEach(item => {
@@ -40,7 +42,7 @@ const mostrarConductores = () => {
         tr.innerHTML = `
             <td>${item.documento}</td>
             <td>${item.nombres} ${item.apellidos}</td>
-            <td>${item.telefono}</td>
+            <td>${item.numero_licencia} (${item.categoria_licencia}) - ${item.fecha_vencimiento_licencia}</td>
             <td><strong>[${item.estado.toUpperCase()}]</strong></td>
             <td>
                 <button class="btn-table btn-warning">Editar</button>
@@ -49,7 +51,6 @@ const mostrarConductores = () => {
         tr.querySelector("button").addEventListener("click", () => {
             prepararEdicion(item);
         });
-
         tbody.appendChild(tr);
     });
 };
@@ -84,13 +85,12 @@ const registrarConductor = async () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(getConductorForm())
         });
-
-        const body = await response.json();
         if (response.ok) {
             showModal("Conductor registrado con éxito.", "ok");
             consultarConductores();
             formConductor.reset();
         } else {
+            const body = await response.json();
             showModal(body.error || "Error al registrar el conductor.", "error");
         }
     } catch(ex){
@@ -104,12 +104,12 @@ const actualizarConductor = async () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(getConductorForm())
         });
-        const body = await response.json();
         if (response.ok) {
             showModal("Datos del conductor actualizados.", "ok");
             consultarConductores();
             cancelarEdicion();
         } else {
+            const body = await response.json();
             showModal(body.error || "Error al actualizar los datos.", "error");
         }
     } catch(ex){
@@ -119,35 +119,36 @@ const actualizarConductor = async () => {
 const prepararEdicion = (conductor) => {
     conductorSeleccionado = conductor;
     setConductorForm(conductor);
-    titulo.textContent = "Editar Conductor";
-    btnGuardar.textContent = "Actualizar Datos";
-    btnCancelar.classList.remove("hidden");
-
+    if (titulo) titulo.textContent = "Editar Conductor";
+    if (btnGuardar) btnGuardar.textContent = "Actualizar Datos";
+    if (btnCancelar) btnCancelar.classList.remove("hidden");
     const groupEstado = document.getElementById("form-group-estado");
     if (groupEstado) groupEstado.classList.remove("hidden");
 };
 const cancelarEdicion = () => {
     conductorSeleccionado = null;
-    formConductor.reset();
-    titulo.textContent = "Registrar Conductor";
-    btnGuardar.textContent = "Guardar Conductor";
-    btnCancelar.classList.add("hidden");
-    
+    if (formConductor) formConductor.reset();
+    if (titulo) titulo.textContent = "Registrar Conductor";
+    if (btnGuardar) btnGuardar.textContent = "Guardar Conductor";
+    if (btnCancelar) btnCancelar.classList.add("hidden");
     const groupEstado = document.getElementById("form-group-estado");
     if (groupEstado) groupEstado.classList.add("hidden");
 };
-formConductor.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const data = getConductorForm();
-    
-    if (!data.nombres || !data.apellidos || !data.documento || !data.numero_licencia) {
-        showModal("Los campos de identificación y licencia son estrictamente obligatorios.", "error");
-        return;
-    }
-    conductorSeleccionado ? actualizarConductor() : registrarConductor();
-});
-btnCancelar.addEventListener("click", cancelarEdicion);
-
+if (formConductor) {
+    formConductor.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const data = getConductorForm();
+        
+        if (!data.nombres || !data.apellidos || !data.documento || !data.numero_licencia) {
+            showModal("Los campos de identificación y licencia son estrictamente obligatorios.", "error");
+            return;
+        }
+        conductorSeleccionado ? actualizarConductor() : registrarConductor();
+    });
+}
+if (btnCancelar) {
+    btnCancelar.addEventListener("click", cancelarEdicion);
+}
 document.addEventListener("DOMContentLoaded", () => {
     consultarConductores();
 });

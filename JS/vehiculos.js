@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000/vehiculos"; 
+const API_URL = "http://127.0.0.1:8003/vehiculo"; 
 const tablaBody = document.getElementById("tablaVehiculosBody");
 const formVehiculo = document.getElementById("formVehiculo");
 const obtenerVehiculos = async () => {
