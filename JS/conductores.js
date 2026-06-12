@@ -24,11 +24,7 @@ const mostrarConductores = () => {
         modificarBtn.className = "btn-table btn-warning";
         modificarBtn.addEventListener("click", () => prepararEdicion(item));
         const eliminarBtn = document.createElement("button");
-        eliminarBtn.textContent = "Borrar";
-        eliminarBtn.className = "btn-table btn-danger";
-        eliminarBtn.addEventListener("click", () => borrarConductor(item.id));
         accionesTd.appendChild(modificarBtn);
-        accionesTd.appendChild(eliminarBtn);
         tr.appendChild(docTd);
         tr.appendChild(nombreTd);
         tr.appendChild(licenciaTd);
@@ -64,18 +60,5 @@ const consultarConductores = async () => {
         console.error("Error en el servicio de conductores:", ex);
     }
 };
-const borrarConductor = async (id) => {
-    try {
-        const response = await fetch("http://127.0.0.1:8002/conductores/" + id, {
-            method: "DELETE"
-        });
-        if (response.status == 200) {
-            showModal("Conductor eliminado exitosamente.", "ok");
-            consultarConductores(); 
-        }
-    } catch (ex) {
-        console.error("Error al conectar con el servicio:", ex);
-        showModal("No se pudo eliminar el conductor.", "error");
-    }
-};
+
 consultarConductores();

@@ -1,4 +1,42 @@
 
+
+.container-formulario-modulo {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px;
+    align-items: stretch;
+}
+
+
+.container-formulario-modulo .columna-datos {
+    flex: 1;
+    min-width: 280px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.menu-grid {
+    display: flex;
+    flex-direction: column; 
+    gap: 12px;              
+    width: 100%;
+    margin-top: 15px;
+}
+
+.btn-menu {
+    display: block;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+.container-formulario-modulo .form-actions {
+    margin-top: auto;      
+    padding-top: 35px;     
+    width: 100%;
+    display: flex;
+    justify-content: flex-start; 
+}
 * {
     margin: 0;
     padding: 0;
@@ -227,4 +265,8 @@ h2 {
     color: #ff4d4d;  
     font-size: 11px;
     margin-top: 4px;
+}
+.menu-grid{
+    transform: scale(1); 
+    transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }

@@ -26,6 +26,7 @@ const obtenerVehiculos = async () => {
             `;
             tablaBody.appendChild(tr);
         });
+
     } catch (error) {
         console.error(error);
         tablaBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #ff4d4d;">Error al conectar con el servidor.</td></tr>`;
@@ -46,13 +47,11 @@ const guardarVehiculo = async (e) => {
     try {
         const urlFinal = id ? `${API_URL}/${id}` : API_URL;
         const metodo = id ? "PUT" : "POST"; 
-
         const response = await fetch(urlFinal, {
             method: metodo,
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datosVehiculo)
         });
-
         if (response.ok) {
             showModal(id ? "¡Vehículo actualizado correctamente!" : "¡Vehículo registrado con éxito!", "ok");
             formVehiculo.reset();

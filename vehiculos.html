@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>LogiTrans Express - Menú Principal</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body class="fondo-dashboard">
+
+    <div class="modulo-container">
+        <a href="index.html" class="btn-back">⬅ Volver al Menú Principal</a>
+        <h2>Panel de Control - LogiTrans Express</h2>
+        <p id="bienvenida-usuario">
+            Bienvenido al sistema. Seleccione el módulo que desea gestionar a continuación:
+        </p>
+        
+        <div class="container-formulario-modulo">
+            <div class="columna-datos">
+                <h3>Módulos del Sistema</h3>
+                
+                <div class="menu-grid">
+                    <a href="conductores.html" class="btn btn-primary btn-menu">🚘 Gestión de Conductores</a>
+                    <a href="vehiculos.html" class="btn btn-primary btn-menu">🚚 Gestión de Vehículos</a>
+                    <a href="viajes.html" class="btn btn-primary btn-menu">🗺️ Control de Viajes</a>
+                </div>
+                
+                <div class="form-actions actions-dashboard">
+                    <a href="login.html" class="btn btn-secondary" id="btnCerrarSesion">Cerrar Sesión</a>
+                </div>
+            </div>
+            
+            <div class="columna-imagen">
+                <img src="Recursos/auto.jfif" alt="Logística de Transporte">
+            </div>
+        </div>
+     </div>
+
+    <script src="js/vehiculos.js"></script>
+    <script src="js/vehiculos_modal.js"></script>
+</body>
+</html>
