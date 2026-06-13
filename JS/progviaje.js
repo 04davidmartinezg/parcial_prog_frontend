@@ -13,6 +13,7 @@ const URL_RUTAS       = "http://127.0.0.1:8002/ruta";
 const selectConductor = document.getElementById("selectConductor");
 const selectVehiculo = document.getElementById("selectVehiculo");
 const selectRuta = document.getElementById("selectRuta");
+
 const getViajeForm = () => ({
     conductor_id: parseInt(selectConductor.value),
     vehiculo_id: parseInt(selectVehiculo.value),
@@ -22,6 +23,7 @@ const getViajeForm = () => ({
     fecha_estimada_llegada: document.getElementById("fecha_estimada_llegada").value,
     observaciones: document.getElementById("observaciones").value.trim()
 });
+
 const setViajeForm = (viaje) => {
     selectConductor.value = viaje.conductor_id;
     selectVehiculo.value = viaje.vehiculo_id;
@@ -31,6 +33,7 @@ const setViajeForm = (viaje) => {
     document.getElementById("fecha_estimada_llegada").value = viaje.fecha_estimada_llegada;
     document.getElementById("observaciones").value = viaje.observaciones || "";
 };
+
 const cargarSelectores = async () => {
     try {
         const [resCond, resVeh, resRut] = await Promise.all([
@@ -38,18 +41,21 @@ const cargarSelectores = async () => {
             fetch(URL_VEHICULOS),
             fetch(URL_RUTAS)
         ]);
+        
         const listaConductores = await resCond.json();
         const listaVehiculos = await resVeh.json();
         const listaRutas = await resRut.json();
+        
         selectConductor.innerHTML = '<option value="">-- Seleccione Conductor --</option>';
         listaConductores.forEach(c => {
-            if (c.estado.toLowerCase() === "disponible") { 
+            if (c.estado && c.estado.toLowerCase() === "disponible") { 
                 const opt = document.createElement("option");
                 opt.value = c.id;
                 opt.textContent = `${c.nombres} ${c.apellidos}`;
                 selectConductor.appendChild(opt);
             }
         });
+        
         selectVehiculo.innerHTML = '<option value="">-- Seleccione Vehículo --</option>';
         listaVehiculos.forEach(v => {
             const opt = document.createElement("option");
@@ -57,6 +63,7 @@ const cargarSelectores = async () => {
             opt.textContent = `${v.marca} (${v.placa})`;
             selectVehiculo.appendChild(opt);
         });
+        
         selectRuta.innerHTML = '<option value="">-- Seleccione Ruta --</option>';
         listaRutas.forEach(r => {
             const opt = document.createElement("option");
@@ -68,6 +75,7 @@ const cargarSelectores = async () => {
         console.error("Error cargando datos en los selectores:", error);
     }
 };
+
 const mostrarViajes = () => {
     const tbody = viajesTB.querySelector("tbody");
     tbody.innerHTML = ""; 
@@ -88,6 +96,7 @@ const mostrarViajes = () => {
         tbody.appendChild(tr);
     });
 };
+
 const consultarViajes = async () => {
     try {
         viajes.length = 0;
@@ -110,9 +119,10 @@ const consultarViajes = async () => {
         });
         mostrarViajes();
     } catch (ex) {
-        showModal("Error consultando la programación de viajes.", "error");
+        console.error("Error consultando la programación de viajes:", ex);
     }
 };
+
 const registrarViaje = async () => {
     try {
         const response = await fetch(URL_PROG_VIAJES, { 
@@ -123,16 +133,17 @@ const registrarViaje = async () => {
         const body = await response.json();
 
         if (response.ok) {
-            showModal("Viaje programado con éxito.", "ok");
+            alert("Viaje programado con éxito.");
             consultarViajes();
             formViaje.reset();
         } else {
-            showModal(body.error || "Error al programar el viaje.", "error");
+            alert(body.error || "Error al programar el viaje.");
         }
     } catch (ex) {
-        showModal("Error de conexión con el servidor.", "error");
+        alert("Error de conexión con el servidor.");
     }
 };
+
 const actualizarViaje = async () => {
     try {
         const response = await fetch(`${URL_PROG_VIAJES}/${viajeSeleccionado.id}`, { 
@@ -142,16 +153,17 @@ const actualizarViaje = async () => {
         });
         const body = await response.json();
         if (response.ok) {
-            showModal("Itinerario actualizado correctamente.", "ok");
+            alert("Itinerario actualizado correctamente.");
             consultarViajes();
             cancelarEdicion();
         } else {
-            showModal(body.error || "Error al actualizar el itinerario.", "error");
+            alert(body.error || "Error al actualizar el itinerario.");
         }
     } catch (ex) {
-        showModal("Error de conexión con el servidor.", "error");
+        alert("Error de conexión con el servidor.");
     }
 };
+
 const prepararEdicion = (viaje) => {
     viajeSeleccionado = viaje;
     setViajeForm(viaje);
@@ -159,6 +171,7 @@ const prepararEdicion = (viaje) => {
     btnGuardar.textContent = "Actualizar Viaje";
     btnCancelar.classList.remove("hidden");
 };
+
 const cancelarEdicion = () => {
     viajeSeleccionado = null;
     formViaje.reset();
@@ -166,16 +179,19 @@ const cancelarEdicion = () => {
     btnGuardar.textContent = "Guardar Viaje";
     btnCancelar.classList.add("hidden");
 };
+
 formViaje.addEventListener("submit", (e) => {
     e.preventDefault();
     const data = getViajeForm();
     if (!data.conductor_id || !data.vehiculo_id || !data.ruta_id || !data.fecha_salida || !data.hora_salida) {
-        showModal("Todos los campos obligatorios de la asignación deben completarse.", "error");
+        alert("Todos los campos obligatorios de la asignación deben completarse.");
         return;
     }
     viajeSeleccionado ? actualizarViaje() : registrarViaje();
 });
+
 btnCancelar.addEventListener("click", cancelarEdicion);
+
 document.addEventListener("DOMContentLoaded", async () => {
     await cargarSelectores(); 
     consultarViajes();       
