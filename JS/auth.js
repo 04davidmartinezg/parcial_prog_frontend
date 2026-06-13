@@ -1,4 +1,4 @@
-const URL_AUTH = "http://127.0.0.1:8000"; // Puerto 8000 según tus pruebas HTTP
+const URL_AUTH = "http://127.0.0.1:8000"; 
 
 const iniciarSesion = async (usernameOrEmail, contrasena) => {
     try {
