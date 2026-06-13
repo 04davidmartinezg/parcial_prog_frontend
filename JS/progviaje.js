@@ -6,9 +6,9 @@ const btnGuardar = document.getElementById("btnGuardar");
 const btnCancelar = document.getElementById("btnCancelar");
 const titulo = document.getElementById("form-title");
 const URL_PROG_VIAJES = "http://127.0.0.1:8002/progviaje";    
-const URL_CONDUCTORES = "http://127.0.0.1:8001/conductores";  
-const URL_VEHICULOS   = "http://127.0.0.1:8000/vehiculos";    
-const URL_RUTAS       = "http://127.0.0.1:8003/rutas";        
+const URL_CONDUCTORES = "http://127.0.0.1:8001/conductor";  
+const URL_VEHICULOS   = "http://127.0.0.1:8003/vehiculo";    
+const URL_RUTAS       = "http://127.0.0.1:8002/ruta";        
 
 const selectConductor = document.getElementById("selectConductor");
 const selectVehiculo = document.getElementById("selectVehiculo");
@@ -43,7 +43,7 @@ const cargarSelectores = async () => {
         const listaRutas = await resRut.json();
         selectConductor.innerHTML = '<option value="">-- Seleccione Conductor --</option>';
         listaConductores.forEach(c => {
-            if (c.estado.toLowerCase() === "disponible") { // Validando tu filtro por disponibles
+            if (c.estado.toLowerCase() === "disponible") { 
                 const opt = document.createElement("option");
                 opt.value = c.id;
                 opt.textContent = `${c.nombres} ${c.apellidos}`;
