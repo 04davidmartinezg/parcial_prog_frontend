@@ -68,7 +68,7 @@ const cargarSelectores = async () => {
         listaRutas.forEach(r => {
             const opt = document.createElement("option");
             opt.value = r.id;
-            opt.textContent = `${r.origen} a ${r.destino}`;
+            opt.textContent = `${r.ciudad_origen} a ${r.ciudad_destino}`;
             selectRuta.appendChild(opt);
         });
     } catch (error) {
